@@ -138,7 +138,7 @@ def proxy():
         logger.error(f"Error processing request: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-    return jsonify(final_response), 200
+    return final_response.json(), 200
     
     logger.debug(f'API response: {response_data}')
     return jsonify(response_data), 200
