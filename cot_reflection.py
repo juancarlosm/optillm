@@ -55,6 +55,8 @@ def cot_reflection(system_prompt, initial_query, client, model: str, return_full
 
     logger.info(f"Final output :\n{output}")
 
+    return response
+
     if return_full_response:
         return full_response
     else:
