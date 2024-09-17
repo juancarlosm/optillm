@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 import secrets
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from openai import OpenAI
 
 # Import approach modules
@@ -137,16 +137,26 @@ def proxy():
     except Exception as e:
         logger.error(f"Error processing request: {str(e)}")
         return jsonify({"error": str(e)}), 500
+   
+    if 'stream' in data and data['stream'] == True:
+        return Response(_stream(final_response), mimetype='text/event-stream')
+    else:
+        return final_response.json()
 
-    return final_response.json(), 200
-    
-    logger.debug(f'API response: {response_data}')
-    return jsonify(response_data), 200
+    #return final_response.json(), 200
+    #logger.debug(f'API response: {response_data}')
+    #return jsonify(response_data), 200
 
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "ok"}), 200
 
+
+def _stream(response):
+    for line in response:
+        if 'content' in line['choices'][0]['delta']:
+            yield 'data: ' + json.dumps(line.json()) + "\n\n"
+    yield 'data: [DONE]\n\n'
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run LLM inference with various approaches.")
