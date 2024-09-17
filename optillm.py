@@ -139,7 +139,7 @@ def proxy():
         return jsonify({"error": str(e)}), 500
 
     response_data = {
-        'model': model,
+        'model': f"openai/{model}",
         'stream': False,
         'choices': []
     }
