@@ -140,6 +140,7 @@ def proxy():
 
     response_data = {
         'model': model,
+        'stream': False,
         'choices': []
     }
 
